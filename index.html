@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SCV Reader</title>
+<script src="csvreader.js">
+</script>
+
+
+<script> 
+
+var fileText;
+
+   /* var txtFile = new XMLHttpRequest();
+    txtFile.open("GET", "file://D:/ANSHUMAN/DEV/github/CSVReaderJS/demo.csv", true);
+    txtFile.onreadystatechange = function()
+    {
+        var allText = txtFile.responseText;
+        console.log(allText);
+    }; */
+
+function clickMe() {
+
+    var rowid = document.getElementById("rowid").value;
+    var colid = document.getElementById("colid").value;
+    var results = CSVReader.parse(fileText, {
+        header: true
+    });
+    document.getElementById("output").innerText = getCell(results, rowid, colid);
+}
+
+var openFile = function(event) {
+    var input = event.target;
+    var reader = new FileReader();
+    reader.onload = function() {
+        fileText = reader.result;
+        var node = document.getElementById('output');
+        document.getElementById("myTextArea").innerText = fileText;
+        console.log(reader.result.substring(0, 200));
+    };
+    reader.readAsText(input.files[0]);
+};
+
+function getCell(csvdata, rowid, columnid) {
+    var row = csvdata.data.filter((item) => item.ROW_ID === rowid);
+    var cellValue = row[0][columnid];
+    return cellValue;
+}
+</script>
+
+<style>
+
+.preference {
+    display: flex;
+    justify-content: space-between;
+    width: 20%;
+    margin: .5rem;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>CSV Reader</h1>
+<p>
+<input type='file' accept='text/plain' onchange='openFile(event)'>
+</p>
+<p>
+<textarea rows="10" cols="50" id="myTextArea" readonly>
+</textarea>
+</p>
+<div class="preference">
+    <label for="rowid">Row name?</label>
+    <input type="text" name="rowid" id="rowid" value="CUSTOMER_2">
+</div>
+<div class="preference">
+    <label for="colid">Column Name?</label>
+    <input type="text" name="colid" id="colid" value="CITY">
+</div>
+
+<button type="button" id="convert" onclick="javascript:clickMe()">Get the Cell</button>
+
+<p> The Cell value is : <span id="output"><span></p>
+
+</body>
+</html>
